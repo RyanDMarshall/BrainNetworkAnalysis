@@ -1,0 +1,33 @@
+function distances = rois_distance(indexfile, roisdir)
+% distances = rois_distance(indexfile)
+% returns matrix of roi distances
+
+if roisdir = ''
+    [roisdir, file, ext] = fileparts(indexfile);
+else
+    [indexfiledir, file, ext] = fileparts(
+indexfile = fullfile([file ext]);
+
+fid = fopen(fullfile(roisdir, indexfile));
+rois = textscan(fid, '%s');
+fclose(fid);
+
+nrois = size(rois{1},1);
+centers = cell(nrois,[]);
+distances = zeros(nrois, nrois);
+
+for i = 1:nrois
+    
+    load(fullfile(roisdir, rois{1}{i}));
+    centers{i} = centre(roi);
+    clear roi;
+    
+end
+    
+for i = 1:nrois
+    for j = 1:nrois
+        
+        distances(i, j) = norm(centers{i}-centers{j});
+        
+    end
+end
